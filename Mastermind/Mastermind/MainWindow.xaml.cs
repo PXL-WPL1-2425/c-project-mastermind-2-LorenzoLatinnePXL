@@ -20,7 +20,6 @@ namespace Mastermind
     /// </summary>
     public partial class MainWindow : Window
     {
-
         // Variables
         StringBuilder sb = new StringBuilder();
         Random rnd = new Random();
@@ -34,6 +33,7 @@ namespace Mastermind
         int currentRow;
         int score;
         bool debugMode;
+        bool hasWon;
 
         public MainWindow()
         {
@@ -59,6 +59,8 @@ namespace Mastermind
             currentRow = 0;
             score = 100;
             debugMode = false;
+            solutionTextBox.Visibility = Visibility.Hidden;
+            hasWon = false;
 
             // Generate (new) random Code
             solution = InitalizeColors();
@@ -123,22 +125,16 @@ namespace Mastermind
             {
                 case 0:
                     return (Brush)new BrushConverter().ConvertFromString(options[0]);
-
                 case 1:
                     return (Brush)new BrushConverter().ConvertFromString(options[1]);
-
                 case 2:
                     return (Brush)new BrushConverter().ConvertFromString(options[2]);
-
                 case 3:
                     return (Brush)new BrushConverter().ConvertFromString(options[3]);
-
                 case 4:
                     return (Brush)new BrushConverter().ConvertFromString(options[4]);
-
                 case 5:
                     return (Brush)new BrushConverter().ConvertFromString(options[5]);
-
                 default:
                     return Brushes.White;
             }
@@ -149,21 +145,13 @@ namespace Mastermind
             ComboBox comboBox = sender as ComboBox;
 
             if (comboBox == ComboBoxOption1)
-            {
                 colorLabel1.Background = ChangeLabelBackgroundColor(comboBox);
-            }
             else if (comboBox == ComboBoxOption2)
-            {
                 colorLabel2.Background = ChangeLabelBackgroundColor(comboBox);
-            }
             else if (comboBox == ComboBoxOption3)
-            {
                 colorLabel3.Background = ChangeLabelBackgroundColor(comboBox);
-            }
             else
-            {
                 colorLabel4.Background = ChangeLabelBackgroundColor(comboBox);
-            }
         }
 
         private void UpdateAttempts()
@@ -178,21 +166,8 @@ namespace Mastermind
 
         private void SetAttemptLabelLayout()
         {
-            if (attempts >= 8)
-            {
-                attemptsLabel.Foreground = Brushes.Red;
-                attemptsLabel.FontWeight = FontWeights.Bold;
-            }
-            else if (attempts >= 5)
-            {
-                attemptsLabel.Foreground = Brushes.Orange;
-                attemptsLabel.FontWeight = FontWeights.DemiBold;
-            }
-            else
-            {
-                attemptsLabel.Foreground = Brushes.Black;
-                attemptsLabel.FontWeight = FontWeights.Regular;
-            }
+            attemptsLabel.Foreground = attempts >= 8 ? Brushes.Red : attempts >= 5 ? Brushes.Orange : Brushes.Black;
+            attemptsLabel.FontWeight = attempts >= 8 ? FontWeights.Bold : attempts >= 5 ? FontWeights.DemiBold : FontWeights.Normal;
         }
 
         private void ClearComboBoxSelection(Label[] labels)
@@ -211,31 +186,40 @@ namespace Mastermind
 
         private void checkButton_Click(object sender, RoutedEventArgs e)
         {
-
             if (attempts + 1 != 11)
             {
+                CheckIfPlayerHasWon();
                 attempts++;
                 CreateRow();
                 UpdateAttempts();
                 SetAttemptLabelLayout();
                 UpdateScore();
 
-                if (attempts + 1 == 11)
+                if (attempts + 1 == 11 && !hasWon)
                 {
                     checkButton.Content = "Game Over";
+                    MessageBoxResult result = MessageBox.Show($"Game Over.\nThe code was: {String.Join(", ", solution)}\nTry again?", "Game over", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        ClearGridSection();
+                        StartGame();
+                    }
+                    else
+                        this.Close();
                 }
-            }
-            else
-            {
-                MessageBoxResult result = MessageBox.Show($"Game Over, try again?", "Game over", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
+                else if (hasWon)
                 {
-                    ClearGridSection();
-                    StartGame();
-                }
-                else
-                {
-                    this.Close();
+                    checkButton.Content = "Victory";
+                    MessageBoxResult result = MessageBox.Show($"You won in {attempts} attempts, play again?", "You won", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        ClearGridSection();
+                        StartGame();
+                    }
+                    else
+                    {
+                        this.Close();
+                    }
                 }
             }
         }
@@ -275,8 +259,6 @@ namespace Mastermind
             {
                 Label playerGuess = new Label();
                 playerGuess.Background = labels[i].Background;
-                //playerGuess.BorderBrush = labels[i].BorderBrush;
-                //playerGuess.BorderThickness = labels[i].BorderThickness;
                 playerGuess.Height = 50;
                 playerGuess.Width = 50;
                 playerGuess.Margin = new Thickness(2);
@@ -296,6 +278,20 @@ namespace Mastermind
         {
             HistoryGrid.RowDefinitions.Clear();
             HistoryGrid.Children.Clear();
+        }
+
+        private bool CheckIfPlayerHasWon()
+        {
+            if (ComboBoxOption1.Text == solution[0] && 
+                ComboBoxOption2.Text == solution[1] && 
+                ComboBoxOption3.Text == solution[2] && 
+                ComboBoxOption4.Text == solution[3])
+            {
+                return hasWon = true;
+            }
+            else {
+                return hasWon = false;
+            }
         }
     }
 }
