@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mastermind"
         mc:Ignorable="d"
-        Title="Mastermind" Height="800" Width="750" Loaded="Window_Loaded" KeyDown="ToggleDebug" Background="White">
+        Title="Mastermind" Height="800" Width="750" Loaded="Window_Loaded" KeyDown="ToggleDebug" Background="White" Closing="Window_Closing">
     <Grid x:Name="gameGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>

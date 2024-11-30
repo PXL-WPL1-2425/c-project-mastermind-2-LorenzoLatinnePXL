@@ -293,5 +293,18 @@ namespace Mastermind
                 return hasWon = false;
             }
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MessageBoxResult answer = MessageBox.Show($"Would you like to quit the game?\nYou still have {10 - attempts} attempts left.", "Exit Game", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (answer == MessageBoxResult.Yes)
+            {
+                e.Cancel = false;
+            } else
+            {
+                e.Cancel = true;
+            }
+        }
     }
 }
