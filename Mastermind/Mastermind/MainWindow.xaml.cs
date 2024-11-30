@@ -32,6 +32,7 @@ namespace Mastermind
         string[] options = { "Red", "Yellow", "Orange", "White", "Green", "Blue" };
         int attempts;
         int currentRow;
+        int score;
         bool debugMode;
 
         public MainWindow()
@@ -56,6 +57,7 @@ namespace Mastermind
             // Set all values to starting values.
             attempts = 0;
             currentRow = 0;
+            score = 100;
             debugMode = false;
 
             // Generate (new) random Code
@@ -71,6 +73,7 @@ namespace Mastermind
             }
 
             // Set all layout to starting layout.
+            UpdateScore();
             UpdateAttempts();
             SetAttemptLabelLayout();
             ClearComboBoxSelection(labels);
@@ -168,6 +171,11 @@ namespace Mastermind
             attemptsLabel.Content = $"Attempt: {attempts} / 10";
         }
 
+        private void UpdateScore()
+        {
+            scoreLabel.Content = $"Score: {score} / 100";
+        }
+
         private void SetAttemptLabelLayout()
         {
             if (attempts >= 8)
@@ -210,6 +218,7 @@ namespace Mastermind
                 CreateRow();
                 UpdateAttempts();
                 SetAttemptLabelLayout();
+                UpdateScore();
 
                 if (attempts + 1 == 11)
                 {
@@ -218,7 +227,7 @@ namespace Mastermind
             }
             else
             {
-                MessageBoxResult result = MessageBox.Show("Game Over, try again?", "Game over", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult result = MessageBox.Show($"Game Over, try again?", "Game over", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
                     ClearGridSection();
@@ -235,10 +244,12 @@ namespace Mastermind
         {
             if (colorLabel.Background == null || !solutionBrushes.Contains(colorLabel.Background))
             {
+                score -= 2;
                 colorLabel.BorderThickness = new Thickness(0);
             }
             else if (solutionBrushes.Contains(colorLabel.Background) && !ColorInCorrectPosition(colorLabel, position))
             {
+                score -= 1;
                 colorLabel.BorderBrush = Brushes.Wheat;
                 colorLabel.BorderThickness = new Thickness(5);
             }
