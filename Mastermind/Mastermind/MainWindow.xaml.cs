@@ -26,6 +26,7 @@ namespace Mastermind
         Random rnd = new Random();
         ComboBox[] comboBoxes;
         Label[] labels;
+        Brush[] solutionBrushes = new Brush[4];
         string[] colors = new string[4];
         string[] solution = new string[4];
         string[] options = { "Red", "Yellow", "Orange", "White", "Green", "Blue" };
@@ -63,12 +64,19 @@ namespace Mastermind
             // Set (new) solution in the hidden TextBox.
             solutionTextBox.Text = String.Join(", ", solution);
 
+            // Set solution as brushes in the solutionBrushes array.
+            for (int i = 0; i < solution.Length; i++)
+            {
+                solutionBrushes[i] = (Brush)new BrushConverter().ConvertFromString(solution[i]);
+            }
+
             // Set all layout to starting layout.
             UpdateAttempts();
             SetAttemptLabelLayout();
             ClearComboBoxSelection(labels);
             checkButton.Content = "Check code";
         }
+
         private ComboBox[] AddComboBoxItems(ComboBox[] comboBoxes)
         {
             for (int i = 0; i < comboBoxes.Length; i++)
@@ -198,12 +206,8 @@ namespace Mastermind
 
             if (attempts + 1 != 11)
             {
-                CheckCode(ComboBoxOption1, colorLabel1, 0);
-                CheckCode(ComboBoxOption2, colorLabel2, 1);
-                CheckCode(ComboBoxOption3, colorLabel3, 2);
-                CheckCode(ComboBoxOption4, colorLabel4, 3);
-
                 attempts++;
+                CreateRow();
                 UpdateAttempts();
                 SetAttemptLabelLayout();
 
@@ -217,6 +221,7 @@ namespace Mastermind
                 MessageBoxResult result = MessageBox.Show("Game Over, try again?", "Game over", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
+                    ClearGridSection();
                     StartGame();
                 }
                 else
@@ -226,13 +231,13 @@ namespace Mastermind
             }
         }
 
-        private void CheckCode(ComboBox comboBox, Label colorLabel, int position)
+        private void CheckCode(Label colorLabel, int position)
         {
-            if (comboBox.Text == null || !solution.Contains(comboBox.Text))
+            if (colorLabel.Background == null || !solutionBrushes.Contains(colorLabel.Background))
             {
                 colorLabel.BorderThickness = new Thickness(0);
             }
-            else if (solution.Contains(comboBox.Text) && !ColorInCorrectPosition(comboBox, position))
+            else if (solutionBrushes.Contains(colorLabel.Background) && !ColorInCorrectPosition(colorLabel, position))
             {
                 colorLabel.BorderBrush = Brushes.Wheat;
                 colorLabel.BorderThickness = new Thickness(5);
@@ -244,10 +249,42 @@ namespace Mastermind
             }
         }
 
-        private bool ColorInCorrectPosition(ComboBox comboBox, int position)
+        private bool ColorInCorrectPosition(Label colorLabel, int position)
         {
-            return comboBox.Text == solution[position].ToString() ? true : false;
+            return colorLabel.Background == solutionBrushes[position];
+        }
 
+        private void CreateRow()
+        {
+            RowDefinition rowDefinition = new RowDefinition();
+            rowDefinition.Height = GridLength.Auto;
+            HistoryGrid.RowDefinitions.Add(rowDefinition);
+
+            for (int i = 0; i < 4; i++)
+            {
+                Label playerGuess = new Label();
+                playerGuess.Background = labels[i].Background;
+                //playerGuess.BorderBrush = labels[i].BorderBrush;
+                //playerGuess.BorderThickness = labels[i].BorderThickness;
+                playerGuess.Height = 50;
+                playerGuess.Width = 50;
+                playerGuess.Margin = new Thickness(2);
+
+                Grid.SetRow(playerGuess, currentRow);
+                Grid.SetColumn(playerGuess, i);
+
+                HistoryGrid.Children.Add(playerGuess);
+
+                CheckCode(playerGuess, i);
+            }
+
+            currentRow++;
+        }
+
+        private void ClearGridSection()
+        {
+            HistoryGrid.RowDefinitions.Clear();
+            HistoryGrid.Children.Clear();
         }
     }
 }

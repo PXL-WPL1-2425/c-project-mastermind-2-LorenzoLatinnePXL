@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mastermind"
         mc:Ignorable="d"
-        Title="Mastermind" Height="450" Width="800" Loaded="Window_Loaded" KeyDown="ToggleDebug" Background="White">
+        Title="Mastermind" Height="800" Width="750" Loaded="Window_Loaded" KeyDown="ToggleDebug" Background="White">
     <Grid x:Name="gameGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="100"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -35,7 +35,16 @@
         <Label Name="colorLabel3" Grid.Column="2" Grid.Row="2"/>
         <Label Name="colorLabel4" Grid.Column="3" Grid.Row="2"/>
 
-        <TextBox x:Name="solutionTextBox" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Height="40px" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden" IsEnabled="False" Margin="0,5,0,0" />
-        
+        <TextBox x:Name="solutionTextBox" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Height="40px" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden" IsEnabled="False" Margin="0,5,0,0" />
+
+        <Grid x:Name="HistoryGrid" Grid.Row="4" Grid.ColumnSpan="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+        </Grid>
+
     </Grid>
 </Window>
