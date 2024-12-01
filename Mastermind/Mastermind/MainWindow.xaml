@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mastermind"
         mc:Ignorable="d"
-        Title="Mastermind" Height="800" Width="750" Loaded="Window_Loaded" KeyDown="ToggleDebug" Background="White" Closing="Window_Closing">
+        Title="Mastermind" Height="930" Width="750" Loaded="Window_Loaded" KeyDown="ToggleDebug" Background="White" Closing="Window_Closing">
     <Grid x:Name="gameGrid">
+        <Grid.Background>
+            <ImageBrush ImageSource="/assets/pokemon-background.jpg" Stretch="UniformToFill"/>
+        </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="Auto"/>
@@ -35,9 +38,8 @@
         <Label Name="colorLabel3" Grid.Column="2" Grid.Row="2"/>
         <Label Name="colorLabel4" Grid.Column="3" Grid.Row="2"/>
 
-        <TextBox x:Name="solutionTextBox" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Height="40px" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden" IsEnabled="False" Margin="0,5,0,0" />
 
-        <Grid x:Name="HistoryGrid" Grid.Row="4" Grid.ColumnSpan="4">
+        <Grid x:Name="HistoryGrid" Grid.Row="3" Grid.ColumnSpan="4" Height="675">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -46,5 +48,6 @@
             </Grid.ColumnDefinitions>
         </Grid>
 
+        <TextBox x:Name="solutionTextBox" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Height="30px" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Hidden" IsEnabled="False" />
     </Grid>
 </Window>
